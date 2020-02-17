@@ -14,8 +14,9 @@ def get_line_numbers(raw_line):
     return raw_line.split(",",1)[0], raw_line.split(",",1)[1]
     
 def find_diff():
+    status = 0
     #Hard code the directory temp
-    path="~/opensource/git-hooks"
+    path="/var/mentor/opensource/git-hooks"
     os.chdir(path)
     #print(os.getcwd())
     
@@ -26,40 +27,46 @@ def find_diff():
     
     output_file = 'output.magic'
     
-    # Writing to a file 
-    file1 = open(output_file, 'w') 
-    file1.writelines(output)
-    file1.close()
-    
-    # Using readlines() 
-    file1 = open(output_file, 'r') 
-    lines = file1.readlines() 
-    
-    #[[file_name, line_number, offset], [file_name, line_number, offset], ...]
-    my_list = []
-    file_name = ""
-    found_file = 0
-    
-    for line in lines:
+    # If we have received diff
+    if output:
+           
+        # Writing to a file 
+        file1 = open(output_file, 'w') 
+        file1.writelines(output)
+        file1.close()
         
-        #Detect if it is a new file
-        if line[0:3] == "+++":
-            file_name = get_file_name(line)
-            found_file = 1
-          
-        #Detect if this is the diff of next file 
-        if line[0:3] == "---":
-                found_file = 0
-          
-        if found_file == 1 and line[0:2] == "@@":
-            line_number, offset = get_line_numbers(line)
-            my_list.append([file_name, line_number, offset])
-          
-    
-    print(my_list)
-    
-    os.remove(output_file)
-    return my_list
+        # Using readlines() 
+        file1 = open(output_file, 'r') 
+        lines = file1.readlines() 
+        
+        #[[file_name, line_number, offset], [file_name, line_number, offset], ...]
+        my_list = []
+        file_name = ""
+        found_file = 0
+        
+        for line in lines:
+            
+            #Detect if it is a new file
+            if line[0:3] == "+++":
+                file_name = get_file_name(line)
+                found_file = 1
+              
+            #Detect if this is the diff of next file 
+            if line[0:3] == "---":
+                    found_file = 0
+              
+            if found_file == 1 and line[0:2] == "@@":
+                line_number, offset = get_line_numbers(line)
+                my_list.append([file_name, line_number, offset])
+              
+        
+        print(my_list)
+        
+        os.remove(output_file)
+        return my_list, status
+    else:
+        status = -1
+        return my_list, status
 
 
 def fix_tabs(info):
@@ -93,7 +100,12 @@ def main():
     #Local variables
     replaced_lines = 0
     
-    my_list = find_diff()
+    my_list, status = find_diff()
+    
+    # If status isn't success, return error.
+    if status != 0:
+        print("No file(s) have been staged.")
+        return -1
     
     for info in my_list:
         print(info)
@@ -103,11 +115,13 @@ def main():
     if replaced_lines > 0:
         print(replaced_lines, " Line(s) replaced tabs with spaces")
         print("Aborted.")
-        print("Please restage files and try again!")
+        print("Please stage the changed files and try again!")
         return -1
     else:
         return 0
     
     
 
-main()
+if __name__ == '__main__':
+    exit(main())
+
