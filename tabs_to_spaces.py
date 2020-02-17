@@ -1,4 +1,5 @@
 #!/bin/env python
+
 import os
 import subprocess
 
@@ -61,9 +62,8 @@ def find_diff():
     output_file = 'output.magic'
     
     #Hard code the directory temp
-    path="/var/mentor/opensource/git-hooks"
-    os.chdir(path)
-    #print(os.getcwd())
+    #path="/var/mentor/opensource/git-hooks"
+    #os.chdir(path)
     
     bashCommand = "git diff --cached"
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
