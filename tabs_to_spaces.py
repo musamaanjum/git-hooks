@@ -60,7 +60,11 @@ def find_diff():
     #Local variables
     status = 0
     output_file = 'output.magic'
-    
+    #[[file_name, line_number, offset], [file_name, line_number, offset], ...]
+    my_list = []
+    #[10, 20, 30]
+    changed_ln = []
+
     #Hard code the directory temp
     #path="/var/mentor/opensource/git-hooks"
     #os.chdir(path)
@@ -69,7 +73,7 @@ def find_diff():
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     output = process.communicate()
     output = output[0]
-      
+    
     # If we have received diff
     if output:
         
@@ -84,10 +88,6 @@ def find_diff():
         file1 = open(output_file, 'r') 
         lines = file1.readlines() 
         
-        #[[file_name, line_number, offset], [file_name, line_number, offset], ...]
-        my_list = []
-        #[10, 20, 30]
-        changed_ln = []
         file_name = ""
         found_file = 0
         found_offsets = 0
@@ -166,7 +166,7 @@ def main():
     # If status isn't success, return error.
     if status != 0:
         print("No file(s) have been staged.")
-        return -1
+        return 0
     
     for info in my_list:
         print(info)
