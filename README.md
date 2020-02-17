@@ -1,5 +1,7 @@
 # git-hooks
 
+[![Build Status](https://travis-ci.com/musamaanjum/git-hooks.svg?branch=master)](https://travis-ci.com/musamaanjum/git-hooks)
+
 ## Sources
 **tabs_to_spaces.py** - Contains the code which converts tabs to spaces
 
@@ -34,7 +36,7 @@ Stage the file again and commit again:
 `git add test-file/git.txt`
 `git commit`
 
-This the tabs have been converted to spaces.
+Thus the tabs have been converted to spaces.
 
 ## Caution
 * If the pre-commit hook rejects the commit and asks to stage the file again, please do so. If this file isn't staged, next time the pre-commit hook will pass.
